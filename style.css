@@ -76,14 +76,15 @@ nav a{
 }
 
 
-main .col-md-4 {
+main .col-md-4{
   text-align: left;
   font-family: 'Poppins', sans-serif;
 }
 main .col-md-4 img{
   border: 0.5em solid white;
-  width: 90%;
+  width: 100%;
 }
+
 #about{
 padding-top:5em;
 }
@@ -95,8 +96,16 @@ padding-top:5em;
   font-size: 1.1em;
 }
 
+#secondry-nav{
+  padding-left: 1em;
+}
+#secondry-nav li a{
+  color: white;
+}
+
 .border{
   border-left: 0.5em solid white;
+
 }
 .skill{
   background: #FF5D73;
@@ -138,4 +147,19 @@ padding-top:5em;
 }
 .skills-right{
   float: right;
+}
+
+.project{
+  text-align: left;
+  border-left: 0.5em solid white;
+  margin-top: 2em;
+  padding-bottom: 1em;
+  padding-left: 1em;
+  height: auto;
+}
+.project h1{
+  padding-bottom: 0.2em;
+}
+.project a{
+  color: #FF5D73
 }
