@@ -102,6 +102,9 @@ height: 100%;
 #secondry-nav li a{
   color: white;
 }
+#text span{
+  color: #FF5D73;
+}
 
 .border{
   border-left: 0.3em solid white;
@@ -159,12 +162,19 @@ height: 100%;
   padding-left: 1em;
   height: auto;
 }
+.project ul{
+  list-style: none;
+  padding-left: 0;
+}
 .project h1{
   padding-bottom: 0.2em;
 }
 .project a{
-  color: #FF5D73
+  color: #FF5D73;
 }
 .project p u{
+  color: #FF5D73;
+}
+#highlight{
   color: #FF5D73;
 }
