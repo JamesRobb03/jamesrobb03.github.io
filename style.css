@@ -97,29 +97,28 @@ height: 100%;
 }
 
 #secondry-nav{
-  padding-left: 1em;
+  padding-left: 0;
+  list-style: none;
 }
 #secondry-nav li a{
-  color: white;
+  color: #FF5D73;
 }
 #text span{
   color: #FF5D73;
 }
 
+
 .border{
   border-left: 0.3em solid white;
 }
-
 .skill{
   background: #FF5D73;
   height: 3em;
   border-bottom: 0.1em solid #272822;
   width: 100%;
 }
-
 .skill:hover{
   background: #00A28C;
-
 }
 .skill span{
   font-size: 1em;
@@ -177,4 +176,20 @@ height: 100%;
 }
 #highlight{
   color: #FF5D73;
+}
+
+@media only screen and (max-width: 375px) {
+    .skill span{
+      font-size: 0.7em;
+      padding-left: 0.1em;
+      padding-right:0.1em;
+      padding-top: 1.5em;
+    }
+    #secondry-nav li a{
+      font-size: 1.4em;
+      line-height: 2.5em;
+    }
+    .project a{
+      font-size: 1.5em;
+    }
 }
