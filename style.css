@@ -1,3 +1,9 @@
+/*CSS for html and body elemets used so that everything inside
+these emelemnts inherits these values*/
+html {
+  width: 100%;
+  height: 100%;
+}
 body {
   width: 100%;
   height: 100%;
@@ -5,10 +11,8 @@ body {
   color: white;
   background-color: #272822;
 }
-html {
-  width: 100%;
-  height: 100%;
-}
+
+/*CSS for navbar*/
 .navbar-inverse .navbar-brand {
     color: #ffffff;
 }
@@ -19,6 +23,8 @@ nav a{
   font-family: 'Poppins', sans-serif;
 }
 
+/*CSS for the container. used to make sure it takes up
+entire width of the page*/
 .container{
   min-width: 100%;
   max-width: 100%;
@@ -26,6 +32,7 @@ nav a{
   margin:auto;
 }
 
+/*CSS for intro class. Used for landing page.*/
 .intro {
   display: table;
   width: 100%;
@@ -74,7 +81,7 @@ nav a{
   transform: scale(1.1);
 }
 
-
+/*CSS for main element*/
 main .col-md-4{
   text-align: left;
   font-family: 'Poppins', sans-serif;
@@ -84,30 +91,7 @@ main .col-md-4 img{
   width: 100%;
 }
 
-#about{
-padding-top:5em;
-height: 100%;
-}
-#skills{
-  text-align: left;
-  margin-bottom: 5em;
-}
-#text{
-  font-size: 1.1em;
-}
-
-#secondry-nav{
-  padding-left: 0;
-  list-style: none;
-}
-#secondry-nav li a{
-  color: #FF5D73;
-}
-#text span{
-  color: #FF5D73;
-}
-
-
+/*CSS used for skill classes*/
 .border{
   border-left: 0.3em solid white;
 }
@@ -151,7 +135,7 @@ height: 100%;
   float: right;
 }
 
-
+/*CSS for project class*/
 .project{
   text-align: left;
   border-left: 0.5em solid white;
@@ -174,10 +158,33 @@ height: 100%;
 .project p u{
   color: #FF5D73;
 }
+
+/*CSS for ID's*/
+#about{
+padding-top:5em;
+height: 100%;
+}
+#skills{
+  text-align: left;
+  margin-bottom: 5em;
+}
+#text{
+  font-size: 1.1em;
+}
+#secondry-nav{
+  padding-left: 0;
+  list-style: none;
+}
+#secondry-nav li a{
+  color: #FF5D73;
+}
+#text span{
+  color: #FF5D73;
+}
 #highlight{
   color: #FF5D73;
 }
-
+/*Media Queries*/
 @media only screen and (max-width: 375px) {
     .skill span{
       font-size: 0.7em;
