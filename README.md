@@ -1,2 +1,2 @@
 # Coursework
-Coursework for Semester 1 Web Dev
+Coursework 2 for AC11002 – WWW Authoring
