@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="James Robb">
+    <meta name="keywords" content="James Robb,Personal Website, CV, Developer, Projects">
+
+    <title>Side Effects and drug relationships (AI and Algorithm assignment)</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="scroll.js"></script>
+</head>
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <!--Code that makes the navbar collapsable when on a mobile device-->
+         <div class="navbar-header">
+           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+           <a class="navbar-brand" href="index.html">James Robb</a>
+         </div>
+       </div>
+    </nav>
+
+    <main id="about" class="container content-section">
+    	<div class="contain">
+    		<div class="row">
+    			<div class="col-md-4 col-md-offset-1">
+    				<h1>Description</h1>
+    				<p>When treating one or more medical conditions within a patient it is commonplace for them to be prescribed more than one drug for treatment, referred to as polypharmacy. Combinations of drugs are known to create unique side effects and/or increase the frequency of particular side effects manifesting. We aim to create a solution to this problem by finding the common side effects for drug combinations to help the patient understand the risk factors of taking drug combinations and the possible side effects they could experience. We are aiming to produce a program that can produce a graph containing the drugs the patient is taking, the graph will also highlight the ‘at risk’ symptoms (the common side effects), and this will help give everyone involved with the patients treatment a better idea as to what they can expect to happen from the process.
+					</p>
+    			</div>
+    			<div class="col-md-4 col-md-offset-1">
+            		<img src="graphs/GraphOfFullNetwork.png" alt="graph of network">
+          		</div>
+    			
+    		</div>
+    		<div class="row">
+    			<div class="col-md-10 col-md-offset-1">
+    				<h1>The Data Set</h1>
+    				<p>The data set that was used was the ChSe Decagon data set. The data contained inside of this data set was extracted "from public documents, package inserts, drug labels, off-label associations between drugs and side effects, and adverse event reporting systems that collect reports from doctors, patients and drug companies.”​
+					This data set consists of STITCH numbers, an industry-wide ID for drug names, Side effect IDs, and Side effect names.​
+					The data set is made up of 10,825 nodes and 174,978 edges, with something different about this dataset being that it contains two different types of nodes, drug nodes and side effect nodes. There are 640 drug nodes and 10185 side effect nodes. This presented a challenge at first as we were unsure how it was going to be possible to tell the nodes apart. However, the edges indicate that a drug has the side effect the edge is connected to, so by working out the in degree of a node it was possible to determine whether it was a drug node if the in degree was 0 and a side effect node if the in degree was greater than 0.
+					</p>
+    			</div>
+    		</div>
+    		<div class="row">
+    			<div class="col-md-10 col-md-offset-1">
+    				<h1>Approach to solving the problem</h1>
+    				<p>The information we wanted to obtain​ was as follows; the most common side effects​, the different communities within the network, the most common side effects of different drug combinations​, and seeing the overall spread of how common side effects are. To solve these problems we used the snap framework for python. We chose python as we had more experience programming in python instead of c++. The first step was converting the data from a csv into a network that we could use. This was done by reading in the csv file and adding nodes to the network, try and except were used to do this as if a node was added with an id that was already in the network it would throw an exception. This made it relatively easy to do. 
+
+					The second thing that we did was generate a graph of the network. We soon realised that generating a graph of the full network with graphviz was going to be impossible due to how long it would take to render so to render the full network we used Networkx and Matplotlib, a disadvantage of this, however, was that we lost a lot of valuable information that was presented to the user. To compensate for this we then rendered smaller graphs with graphviz that made the structure of the network clear and easy to understand. To add colour to these graphs we wrote a function which edited the dot files produced by graphviz to give a node a colour depending on its In Degree.
+					After generating the graph we then worked on finding the most common side effect. This was done by going through all the nodes in the network provided and finding the node with the largest in degree. A function was then made using the process which found the top 10, or a number the user specifies, most common side effect nodes. A similar process was also used to determine the overall spread of how common side effects were by adding to a counter depending on the in degree of a node.
+
+					Finally, an edge list was created from the network and then an example snap program for communities was run on this edge list to determine how many different communities were contained within the network. 
+					</p>
+    			</div>
+    		</div>
+    		<div class="row">
+    			<div class="col-md-10 col-md-offset-1">
+    				<h1>Presenting the data</h1>
+   				</div>
+   			</div>
+   			<div class="row">
+   				<div class="col-md-4 col-md-offset-1">
+            		<img src="graphs/10_most_common_side_effects.png" alt="graph of network">
+            		<p>From our data set, we also created a graph displaying the most common side effects presented by the drugs. From this, we could conclude that the side effect ‘General physical deterioration’ was the most common side effect presented in the drugs by a fairly large degree compared to the other common side effects.</p>
+          		</div>
+          		<div class="col-md-4 col-md-offset-1">
+            		<img src="graphs/drugs_in_common.png" alt="graph of network">
+            		<p>The spread of common side effects showed us that the frequency of very common side effects within the network (presented in 100 or more drugs) was much less common than common or rare side effects. Only 299 very common side effects were discovered compared to 5341 common side effects (presented in 5 to 100 drugs) and 4544 rare side effects (presented in less than 5 drugs).</p>
+          		</div>
+   			</div>
+   			<div class="row">
+   				<div class="col-md-10 col-md-offset-1">
+   					<h3>Looking at visual representations of the network</h3>
+   					<p>In the following graphs drugs are labelled green or blue and side effects pink. the darker the pink the greater number of drugs have this side effect in common. To see the graphs clearly please zoom in.</p>
+   					<ul>
+   						<li><a href="graphs/GraphOf2Drugscolour.dot.png">Graph of 2 Drugs in the network</a></li>
+   						<li><a href="graphs/GraphOf3Drugscolour.dot.png">Graph of 3 Drugs in the network</a></li>
+   						<li><a href="graphs/GraphOf4Drugscolour.dot.png">Graph of 4 Drugs in the network</a></li>
+   						<li><a href="graphs/GraphOf10Drugscolour.dot.png">Graph of 10 Drugs in the network</a></li>
+   					</ul>
+   				</div>
+   			</div>
+   		</div>
+    	</div>
+    </main>
+</body>
+</html>
