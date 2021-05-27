@@ -32,6 +32,18 @@ entire width of the page*/
   margin:auto;
 }
 
+@keyframes zoom{
+  0%   {font-size: 3em;}
+  50%  {font-size: 4em;}
+  100% {font-size: 3em;}
+}
+.fa-chevron-down{
+  color: white;
+  animation: zoom;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+}
+
 /*CSS for intro class. Used for landing page.*/
 .intro {
   display: table;
