@@ -196,6 +196,14 @@ height: 100%;
 #highlight{
   color: #FF5D73;
 }
+
+#languageList{
+  list-style: disc;
+  padding-left: 20px;
+  /*color: #FF5D73;*/
+}
+
+
 /*Media Queries*/
 @media only screen and (max-width: 375px) {
     .skill span{
