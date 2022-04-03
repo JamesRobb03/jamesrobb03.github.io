@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Honours Project</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="css/simple-grid.css">
+</head>
+
+<body>
+<div class="container">
+  <div class = "row">
+    <div class = "col-2 text-centre left-col">
+      <h3><u>Filters</u></h3>
+      <p>Community Detection Algorithm:</p>
+      <div class="select-container">
+        
+      </div>
+      <p>Node size based on:</p>
+      <div class="node-size-filter">
+        <form id="form">
+          <input type="radio" name="stack" value="degree" checked="checked">Number of mutual connections<br>
+          <input type="radio" name="stack" value="followers" >Number of followers<br>
+          <input type="radio" name="stack" value="following">Number of following<br>
+        </form>
+      </div>
+
+      <h3><u>Other Visualisations</u></h3>
+      <a href="beeswarm.html">View Bias Visualisation</a> 
+    </div>
+    <div class = "col-8" id="svgContainer">
+      <svg id="shadow"></svg>
+    </div>
+    <div class = "col-2 text-centre right-col">
+      <h3 id="twitter-name-text"></h3>
+      <div class="row">
+        <div class="col-6">
+          <p id="following-text"></p>
+          <p id="following-number"></p>
+        </div>
+        <div class="col-6">
+          <p id="follower-text"></p>
+          <p id="follower-number"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div id="bias">
+            <h3 id="biash3"></h3>
+            <p id="biasp"></p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <h3 id="interesth3"></h3>
+          <ol id="interests">
+            
+          </ol>
+          <div class="svgwords">
+            
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <h3 id="mutualh3"></h3>
+          <div id="mutual-text">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+<script>
+
+let box = document.querySelector('#svgContainer');
+let width = box.offsetWidth;
+let height = window.innerHeight;
+var svg = d3.select("svg");
+
+//svg.attr("width", width);
+//svg.attr("height", height);
+
+let string = "0 0 " + String(width) + " " + String(height);
+svg.attr("preserveAspectRatio", "xMinYMin meet")
+svg.attr("viewBox", string)
+svg.style("background", "#DCE1DE"); //#DCE1DE
+// Call zoom for svg container.
+svg.call(d3.zoom().on('zoom', zoomed));
+
+var color = d3.scaleOrdinal(d3.schemeCategory20b);
+
+var container = svg.append('g');
+
+// Toggle for ego networks on click (below).
+var toggle = 0;
+
+
+d3.json("http://159.65.25.132:5000/james", function(error, graph) {
+  if (error) throw error;
+
+  // Make object of all neighboring nodes.
+  var linkedByIndex = {};
+  graph.links.forEach(function(d) {
+	  linkedByIndex[d.source + ',' + d.target] = 1;
+	  linkedByIndex[d.target + ',' + d.source] = 1;
+  });
+
+  // A function to test if two nodes are neighboring.
+  function neighboring(a, b) {
+	  return linkedByIndex[a.id + ',' + b.id];
+  }
+
+  // Linear scale for degree centrality.
+  var degreeSize = d3.scaleLinear()
+  	.domain([d3.min(graph.nodes, function(d) {return d.degree; }),d3.max(graph.nodes, function(d) {return d.degree; })])
+  	.range([10,100]);
+
+
+  var link = container.append("g")
+      .attr("class", "links")
+    .selectAll("line")
+    .data(graph.links, function(d) { return d.source + ", " + d.target;})
+    .enter().append("line")
+      .attr('class', 'link');
+
+
+  var node = container.append("g")
+      .attr("class", "nodes")
+    .selectAll("circle")
+    .data(graph.nodes)
+    .enter().append("circle")
+    // Use degree centrality from NetworkX in json.
+    .attr('r', function(d, i) { return degreeSize(d.degree); })
+    // Color by community
+    .attr("fill", function(d) {return color(d.label_propogation_community); })
+    .attr('class', 'node')
+    .attr('stroke', 'black')
+    .attr('stroke-width', '3')
+    // On click, toggle networks for the selected node.
+      .on('click', function(d, i) {
+	      if (toggle == 0) {
+		      // Ternary operator restyles links and nodes if they are adjacent.
+          var array = [];
+		      d3.selectAll('.link').style('stroke-opacity', function (l) {
+			      return l.target == d || l.source == d ? 1 : 0.0;
+		      });
+		      d3.selectAll('.node').style('opacity', function (n) {
+            if (neighboring(d,n)) {
+              array.push(n.name)
+            }
+			      return neighboring(d, n) ? 1 : 0.1;
+		      });
+		      d3.select(this).style('opacity', 1).style('stroke', 'white').style('stroke-width','5');
+		      toggle = 1;
+
+          d3.select('#twitter-name-text').text("@" + d.name);
+
+          d3.select('#follower-text').text("Followers:");
+          d3.select('#follower-number').text(d.followers);
+          d3.select('#following-text').text("Following:");
+          d3.select('#following-number').text(d.following);
+
+          d3.select('#biash3').text('Political Bias Score');
+          d3.select('#biasp').text(d.bias);
+
+          var arr = eval(d.interests);
+           d3.select("#interesth3").text("Users Top Interests")
+          // for (var i = 0; i < arr.length; i++) {
+          //   d3.select("#interests").append("li").text(arr[i][0]);
+          // }
+
+          d3.select('#mutualh3').text("Mutual Accounts:")
+          for (var i = 0; i < array.length; i++) {
+            d3.select('#mutual-text').append('p').text("@"+array[i]);
+            //console.log(array[i]);
+          }
+
+          //word cloud code :)
+          var wordsvg = d3.select(".svgwords").append("svg")
+          .attr("width", 200).attr("height", 180)
+          .append("g");
+
+          var layout = d3.layout.cloud()
+          .size([200, 180])
+          .words(arr.map(function(d) { return {text: d[0], size: convertRange(d[1], findRange(arr), [20,40] )}; }))
+          .padding(5)        //space between words
+          .rotate(function() { return ~~(Math.random() * 2) * 90; })
+          .fontSize(function(d) { return d.size; })      // font size of words
+          .on("end", draw);
+        layout.start();
+
+        // This function takes the output of 'layout' above and draw the words
+        // Wordcloud features that are THE SAME from one word to the other can be here
+        function draw(words) {
+          wordsvg
+            .append("g")
+              .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+              .selectAll("text")
+                .data(words)
+              .enter().append("text")
+                .style("font-size", function(d) { return d.size; })
+                .style("fill", "#f090c5")
+                .attr("text-anchor", "middle")
+                .style("font-family", "Helvetica")
+                .attr("transform", function(d) {
+                  return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function(d) { return d.text; });
+        }
+
+
+        //https://stackoverflow.com/questions/14224535/scaling-between-two-number-ranges
+        function convertRange( value, r1, r2 ) { 
+            return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
+        }
+
+        function findRange(array){
+          var max = array[0][1]
+          var min = array[0][1]
+
+          for (var i = 0; i < array.length; i++) {
+            if (max<array[i][1]) {max = array[i][1]}
+            if (min>array[i][1]) {min = array[i][1]}
+          }
+        return [min, max];
+        }
+
+	      }
+	      else {
+		      // Restore nodes and links to normal opacity.
+		      d3.selectAll('.link').style('stroke-opacity', '0.6');
+		      d3.selectAll('.node').style('opacity', '1').style('stroke','black').style('stroke-width','3');
+          d3.select('#twitter-name-text').text("");
+          d3.select('#follower-text').text("");
+
+          d3.select('#biash3').text('');
+          d3.select('#biasp').text("");
+
+          d3.select("#interesth3").text("")
+          // d3.select("#interests").selectAll("li").remove();
+
+          d3.select('#follower-number').text("");
+          d3.select('#following-text').text("");
+          d3.select('#following-number').text("");
+          d3.select('#mutual-text').text("");
+          d3.select('#mutualh3').text("");
+		      toggle = 0;
+
+          d3.select(".svgwords").selectAll("svg").remove();
+	      }
+      });
+
+  node.append("title")
+      .text(function(d) { return d.name; });
+
+  var simulation = d3.forceSimulation(graph.nodes)                 // Force algorithm is applied to data.nodes
+      .force("link", d3.forceLink()                               // This force provides links between nodes
+            .id(function(d) { return d.id; })                     // This provide  the id of a node
+            .links(graph.links)                                    // and this the list of links
+      )
+      .force("charge", d3.forceManyBody().distanceMax(height/2).strength(-1000))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
+      .force("collide", d3.forceCollide().radius( function (d) { return degreeSize(d.degree); }))
+      .on("tick", ticked);
+
+         // let simulation = d3.forceSimulation()
+         //        .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(200))
+         //        .force("charge", d3.forceManyBody().distanceMax(height/2).strength(-400))
+         //        .force("collide", d3.forceCollide(radius).iterations(10))
+         //        .force("center", d3.forceCenter(width/2, height/2));
+ 
+  // This function is run at each iteration of the force algorithm, updating the nodes position.
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+ 
+    node   
+         .attr("transform", function(d) { 
+        return "translate(" + d.x+ "," + d.y + ")"; });
+  }
+
+var community_dropdown = d3.select('.select-container')
+    .append('select')
+    .on('change', function() { 
+      var community = this.value;
+      if (community=="Label Propogation Community") {
+        node.attr('fill', function(d) { return color(d.label_propogation_community);} );
+      }else if(community=="Political Bias"){
+        node.attr('fill', function(d) { 
+          if (d.bias == 0) {
+            return "#d9dbde";
+          }else if (d.bias>0) {
+            return "#E4003B";
+          }
+          else{
+            return "#0087dc";
+          }
+         } );
+      }
+      else{
+        node.attr('fill', function(d) { return color(d.modularity_community); } );
+      }
+    });
+  community_dropdown.selectAll('option')
+    .data(['Label Propogation Community', 'Modularity Community', 'Political Bias'])
+    .enter().append('option')
+    .attr('value', function(d) { return d; })
+    .text(function(d) { return d; });
+
+
+
+d3.selectAll("input[name='stack']").on("change", function(){
+    if (this.value == "degree") {
+      degreeSize = d3.scaleLinear()
+      .domain([d3.min(graph.nodes, function(d) {return d.degree; }),d3.max(graph.nodes, function(d) {return d.degree; })])
+      .range([10,100]);
+
+            
+      simulation = d3.forceSimulation(graph.nodes)                 // Force algorithm is applied to data.nodes
+      .force("link", d3.forceLink()                               // This force provides links between nodes
+            .id(function(d) { return d.id; })                     // This provide  the id of a node
+            .links(graph.links)                                    // and this the list of links
+      )
+      .force("charge", d3.forceManyBody().distanceMax(height/2).strength(-1000))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
+      .force("collide", d3.forceCollide().radius( function (d) { return degreeSize(d.degree); }))
+      .on("tick", ticked);
+
+      node.attr('r', function(d, i) { return degreeSize(d.degree); });
+
+    }else if (this.value == "followers") {
+      degreeSize = d3.scaleLinear()
+      .domain([d3.min(graph.nodes, function(d) {return d.followers; }),d3.max(graph.nodes, function(d) {return d.followers; })])
+      .range([10,100]);
+
+      
+      
+      simulation = d3.forceSimulation(graph.nodes)                 // Force algorithm is applied to data.nodes
+      .force("link", d3.forceLink()                               // This force provides links between nodes
+            .id(function(d) { return d.id; })                     // This provide  the id of a node
+            .links(graph.links)                                    // and this the list of links
+      )
+      .force("charge", d3.forceManyBody().distanceMax(height/2).strength(-1000))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
+      .force("collide", d3.forceCollide().radius( function (d) { return degreeSize(d.followers); }))
+      .on("tick", ticked);
+
+      node.attr('r', function(d, i) { return degreeSize(d.followers); });
+
+    }else if (this.value == "following"){
+      degreeSize = d3.scaleLinear()
+      .domain([d3.min(graph.nodes, function(d) {return d.following; }),d3.max(graph.nodes, function(d) {return d.following; })])
+      .range([10,100]);
+
+      
+      
+      simulation = d3.forceSimulation(graph.nodes)                 // Force algorithm is applied to data.nodes
+      .force("link", d3.forceLink()                               // This force provides links between nodes
+            .id(function(d) { return d.id; })                     // This provide  the id of a node
+            .links(graph.links)                                    // and this the list of links
+      )
+      .force("charge", d3.forceManyBody().distanceMax(height/2).strength(-1000))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
+      .force("collide", d3.forceCollide().radius( function (d) { return degreeSize(d.following)+0.1; }))
+      .on("tick", ticked);
+
+      node.attr('r', function(d, i) { return degreeSize(d.following); });
+    }
+});
+
+});
+
+// Zooming function translates the size of the svg container.
+function zoomed() {
+	  container.attr("transform", "translate(" + d3.event.transform.x + ", " + d3.event.transform.y + ") scale(" + d3.event.transform.k + ")");
+}
+
+</script>
+</body>
+</html>

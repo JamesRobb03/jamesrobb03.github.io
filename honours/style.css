@@ -1,0 +1,68 @@
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+html, body{
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	height: 100%;
+	background:#ECF0ED;
+}
+.node text {
+  fill:black;   /* <== Set the fill */
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+  cursor: move;
+}
+.text-centre{
+	text-align: center;
+}
+
+#svgContainer{
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+#shadow{
+	filter: drop-shadow(0 0 0.05rem black);
+}
+
+
+/*#svgContainer{
+	border-right: solid black 1px;
+	border-left: solid black 1px;
+}*/
+
+#mutual-text{
+	height: 200px;
+	overflow-y: auto;
+}
+
+#follower-text{
+	margin-bottom: 0;
+}
+
+#following-text{
+	margin-bottom:0;
+}
+
+#follower-number{
+	margin-top: 0;
+}
+
+#following-number{
+	margin-top: 0;
+}
+
+.node-size-filter{
+	text-align: left;
+}
+
+ol{
+	list-style-position: inside;
+}
+
+#title h1{
+	font-size: 15em;
+}
